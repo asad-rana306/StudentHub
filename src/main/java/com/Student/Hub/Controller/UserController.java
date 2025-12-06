@@ -2,25 +2,58 @@ package com.Student.Hub.Controller;
 
 import com.Student.Hub.Entity.User;
 import com.Student.Hub.Services.UserServices;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    @Autowired
-    private UserServices userServices;
+
+    private final UserServices userServices;
+
+    public UserController(UserServices userServices) {
+        this.userServices = userServices;
+    }
     @GetMapping
-    public ResponseEntity<?> getAllUser(){
-        try{
-            List<User> user = userServices.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userServices.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @PostMapping
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        User savedUser = userServices.addUser(user);
+        return ResponseEntity.ok(savedUser);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUserById(@PathVariable String id) {
+        try {
+            ObjectId objectId = new ObjectId(id);
+            userServices.deleteById(objectId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid ID format");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/id/{id}")
+    public ResponseEntity<?> updateUserById(
+            @PathVariable String id,
+            @RequestBody User updatedUser
+    ) {
+        try {
+            ObjectId objectId = new ObjectId(id);
+            User user = userServices.updateById(objectId, updatedUser);
             return ResponseEntity.ok(user);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid ID format");
+        } catch (RuntimeException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
