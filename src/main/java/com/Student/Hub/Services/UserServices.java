@@ -3,6 +3,8 @@ package com.Student.Hub.Services;
 import com.Student.Hub.Entity.User;
 import com.Student.Hub.Repository.UserRepository;
 import org.bson.types.ObjectId;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
 public class UserServices {
 
     private final UserRepository userRepository;
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserServices(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -19,6 +22,10 @@ public class UserServices {
         return userRepository.findAll();
     }
     public User addUser(User user) {
+        if(userRepository.findByUserId(user.getUserId()).isPresent()){
+            throw new RuntimeException("This ID is already taken, please choose another.");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
     public void deleteById(ObjectId id) {

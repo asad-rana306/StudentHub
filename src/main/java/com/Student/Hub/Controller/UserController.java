@@ -4,6 +4,8 @@ import com.Student.Hub.Entity.User;
 import com.Student.Hub.Services.UserServices;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,18 +25,13 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        User savedUser = userServices.addUser(user);
-        return ResponseEntity.ok(savedUser);
-    }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable String id) {
         try {
             ObjectId objectId = new ObjectId(id);
             userServices.deleteById(objectId);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(200).body("Deleted Successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Invalid ID format");
         } catch (RuntimeException e) {
