@@ -40,10 +40,10 @@ public class PublicController {
     public ResponseEntity<?> login(@RequestBody User user) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword())
+                    new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword())
             );
             System.out.println("password authenticated");
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserId());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
 
             String jwt = jwtUtil.generateToken(userDetails.getUsername());
             return ResponseEntity.ok(jwt);

@@ -1,27 +1,29 @@
 package com.Student.Hub.Controller;
 
 import com.Student.Hub.Entity.Student;
+import com.Student.Hub.Entity.User;
+import com.Student.Hub.Repository.StudentRepository;
 import com.Student.Hub.Services.StudentService;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
-
+import java.util.Map;
 @RestController
 @RequestMapping("/students")
 public class StudentController {
 
     private final StudentService studentService;
+    private final StudentRepository studentRepository;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, StudentRepository studentRepository) {
         this.studentService = studentService;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Student>> getAllStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+        this.studentRepository = studentRepository;
     }
 
     @GetMapping("/{id}")
@@ -31,6 +33,9 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Student> addStudent(@Valid @RequestBody Student student) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        student.setStudentName(userName);  // Set logged-in user's name
         return ResponseEntity.ok(studentService.addStudent(student));
     }
 
@@ -43,5 +48,17 @@ public class StudentController {
     public ResponseEntity<?> deleteStudent(@PathVariable String id) {
         studentService.deleteStudent(new ObjectId(id));
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/checkAndGetData")
+    public ResponseEntity<?> checkStudentExistsAndGetData() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+
+        Student student = studentService.getStudentByUserName(userName);
+        if(student != null){
+            return ResponseEntity.ok(student);
+        }
+        return ResponseEntity.status(404).body("Student not found: " + userName);
     }
 }

@@ -15,13 +15,11 @@ import java.util.List;
 public class User {
     @Id
     private ObjectId id;
-    @NonNull
-    private String userName;
     private String email;
     @NonNull
     private String password;
     private List<String> roles;
     @NonNull
     @Indexed(unique = true)
-    private String userId;
+    private String userName;
 }

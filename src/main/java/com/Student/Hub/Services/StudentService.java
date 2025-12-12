@@ -27,6 +27,9 @@ public class StudentService {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
     }
+    public Student getStudentByUserName(String studentName){
+        return studentRepository.findByStudentName(studentName);
+    }
 
     // Add new student
     public Student addStudent(Student student) {
@@ -39,8 +42,7 @@ public class StudentService {
     public Student updateStudent(ObjectId id, Student updatedStudent) {
         return studentRepository.findById(id).map(student -> {
 
-            // Update fields if not null
-            if (updatedStudent.getFullName() != null) student.setFullName(updatedStudent.getFullName());
+            if(updatedStudent.getStudentName() != null) student.setStudentName(updatedStudent.getStudentName());
             if (updatedStudent.getFatherName() != null) student.setFatherName(updatedStudent.getFatherName());
             if (updatedStudent.getCnic() != null) student.setCnic(updatedStudent.getCnic());
             if (updatedStudent.getDateOfBirth() != null) student.setDateOfBirth(updatedStudent.getDateOfBirth());

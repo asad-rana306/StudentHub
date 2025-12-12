@@ -14,10 +14,8 @@ public class Student {
 
     @Id
     private ObjectId id;
-
+    private String studentName;
     private String regNumber;
-    @NonNull
-    private String fullName;
     private String fatherName;
     private String cnic;
     @NonNull

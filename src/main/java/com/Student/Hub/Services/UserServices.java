@@ -22,7 +22,7 @@ public class UserServices {
         return userRepository.findAll();
     }
     public User addUser(User user) {
-        if(userRepository.findByUserId(user.getUserId()).isPresent()){
+        if(userRepository.findByUserName(user.getUserName()) != null){
             throw new RuntimeException("This ID is already taken, please choose another.");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
