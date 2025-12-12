@@ -54,7 +54,6 @@ public class StudentController {
     public ResponseEntity<?> checkStudentExistsAndGetData() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
-
         Student student = studentService.getStudentByUserName(userName);
         if(student != null){
             return ResponseEntity.ok(student);
