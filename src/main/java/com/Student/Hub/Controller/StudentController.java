@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 @RestController
+@CrossOrigin
 @RequestMapping("/students")
 public class StudentController {
 
