@@ -53,12 +53,16 @@ public class StudentController {
 
     @GetMapping("/checkAndGetData")
     public ResponseEntity<?> checkStudentExistsAndGetData() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userName = authentication.getName();
-        Student student = studentService.getStudentByUserName(userName);
-        if(student != null){
-            return ResponseEntity.ok(student);
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userName = authentication.getName();
+            Student student = studentService.getStudentByUserName(userName);
+            if (student != null) {
+                return ResponseEntity.ok(student);
+            }
+            return ResponseEntity.status(404).body("Student not found: " + userName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.status(404).body("Student not found: " + userName);
     }
 }

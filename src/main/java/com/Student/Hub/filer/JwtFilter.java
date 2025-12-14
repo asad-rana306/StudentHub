@@ -13,6 +13,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.util.Collections;
+
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -56,7 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,
                                     null,
-                                    userDetails.getAuthorities()
+                                    Collections.emptyList()
                             );
 
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -65,8 +67,6 @@ public class JwtFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception e) {
-            // IMPORTANT: do NOT throw exception
-            // Invalid token → user stays unauthenticated → Spring returns 401/403
             SecurityContextHolder.clearContext();
         }
 

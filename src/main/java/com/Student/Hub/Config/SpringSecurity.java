@@ -42,24 +42,17 @@ public class SpringSecurity {
 
 
         http.authorizeHttpRequests(auth -> auth
-                // Allow preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                // PUBLIC ENDPOINTS (with /public prefix)
                 .requestMatchers(
                         "/public/login",
                         "/public/signup",
-                        "/public/**"   // optional: allow all public endpoints if you want
+                        "/public/**"
                 ).permitAll()
-
-                // Swagger (still public)
                 .requestMatchers(
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/swagger-ui.html"
                 ).permitAll()
-
-                // All other API calls require JWT
                 .anyRequest().authenticated()
         );
 
@@ -67,13 +60,10 @@ public class SpringSecurity {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        // JWT Filter before UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
-    // Global CORS configuration
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
