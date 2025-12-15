@@ -1,9 +1,9 @@
 package com.Student.Hub.Controller;
-
 import com.Student.Hub.Entity.Student;
 import com.Student.Hub.Entity.User;
 import com.Student.Hub.Repository.StudentRepository;
 import com.Student.Hub.Services.StudentService;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
+@Slf4j
 @RestController
 @CrossOrigin
 @RequestMapping("/students")
@@ -58,6 +59,7 @@ public class StudentController {
             String userName = authentication.getName();
             Student student = studentService.getStudentByUserName(userName);
             if (student != null) {
+                System.out.println("student fetched");
                 return ResponseEntity.ok(student);
             }
             return ResponseEntity.status(404).body("Student not found: " + userName);

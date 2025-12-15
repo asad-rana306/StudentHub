@@ -67,7 +67,6 @@ public class SpringSecurity {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-
         // In production, replace with the exact origins of your front-end domain(s).
         // If you use credentials (cookies/auth), you CANNOT use "*" here.
         config.setAllowedOrigins(List.of(
@@ -80,7 +79,6 @@ public class SpringSecurity {
         config.setAllowedHeaders(List.of("*")); // allow Authorization header
         config.setExposedHeaders(List.of("Authorization")); // if you send Authorization back and frontend needs to read it
         config.setAllowCredentials(true); // if you need cookies or credentials
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;

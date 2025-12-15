@@ -37,18 +37,14 @@ public class JwtFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-
         String authorizationHeader = request.getHeader("Authorization");
-
         String jwt = null;
         String username = null;
-
         try {
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 jwt = authorizationHeader.substring(7);
                 username = jwtUtil.extractUsername(jwt);
             }
-
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -60,16 +56,13 @@ public class JwtFilter extends OncePerRequestFilter {
                                     null,
                                     Collections.emptyList()
                             );
-
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             }
-
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
         }
-
         chain.doFilter(request, response);
     }
 }

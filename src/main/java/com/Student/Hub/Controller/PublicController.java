@@ -46,6 +46,7 @@ public class PublicController {
             UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
 
             String jwt = jwtUtil.generateToken(userDetails.getUsername());
+            System.out.println(userDetails.getUsername());
             return ResponseEntity.ok(jwt);
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(401).body("Incorrect userId or password");
